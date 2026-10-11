@@ -1,0 +1,55 @@
+/* src/styles/globals.css */
+@import "tailwindcss";
+@import "./theme.css";
+
+/* Estilos globales */
+@layer base {
+  body {
+    font-family: system-ui, sans-serif;
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  ul,
+  ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  button {
+    background-color: var(--surface);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--card);
+      color: var(--muted);
+    }
+  }
+
+  input[type="file"],
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="number"],
+  textarea,
+  select {
+    background-color: var(--card);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm);
+  }
+}
