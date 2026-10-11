@@ -1,9 +1,10 @@
 import type { JSX } from "react";
+import { Header } from "./components/common/Header";
 
 function App(): JSX.Element {
   return (
     <div style={{ padding: "2rem" }} >
-      <h1>iPhonix</h1>
+      <Header />
     </div>
   );
 }
