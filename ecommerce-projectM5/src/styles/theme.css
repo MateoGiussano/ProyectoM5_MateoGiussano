@@ -9,6 +9,7 @@
   --radius-lg: 12px;
 
   --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.12);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.15);
 }
 
 /* =========================================
@@ -50,7 +51,7 @@
 .dark {
   /* Background */
   --background: #274C77;
-  --surface: #34688B;
+  --surface: #1E3A5C;
   --card: #34688B;
 
   /* Text */

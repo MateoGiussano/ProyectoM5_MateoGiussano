@@ -59,7 +59,7 @@ export function ProductList() {
         {products.map((product) => (
           <article
             key={product.id}
-            className="flex flex-col gap-3 overflow-hidden rounded-md bg-card p-2 text-foreground shadow-sm"
+            className="flex flex-col gap-3 overflow-hidden rounded-md bg-card p-2 text-foreground shadow-md"
           >
             {}
             <button onClick={() => window.confirm("¿Agregar a favoritos?")}>
