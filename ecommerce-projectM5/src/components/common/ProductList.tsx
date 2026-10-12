@@ -1,6 +1,8 @@
+import type { Product } from "../../types/product";
+
 export function ProductList() {
   // Productos de prueba: más adelante van a venir de Firestore
-  const products = [
+  const products: Product[] = [
     {
       id: "1",
       name: "iPhone 15",

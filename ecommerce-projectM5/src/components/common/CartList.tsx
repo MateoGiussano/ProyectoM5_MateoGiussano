@@ -11,7 +11,6 @@ export function CartList() {
         </button>
       </div>
 
-      {/* Lista de productos del carrito */}
       <ul className="mt-4 divide-y divide-border">
         <li className="flex items-center justify-between gap-4 py-3">
           <div className="flex flex-col">
