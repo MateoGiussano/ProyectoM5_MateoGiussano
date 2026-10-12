@@ -22,7 +22,6 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-1">
-          {/* Carrito con contador */}
           <button
             aria-label="Ver carrito"
             className="relative rounded-full p-2 hover:bg-surface"
@@ -33,13 +32,15 @@ export function Header() {
             </span>
           </button>
 
-          {/* Cambio de tema */}
           <button
             onClick={handleToggleTheme}
             aria-label="Cambiar tema"
-            className="rounded-full p-2 hover:bg-surface"
+            className="h-8 w-14 rounded-full bg-surface p-1 ring-1 ring-border"
           >
-            🌓
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-card text-xs shadow-sm transition-transform duration-300 dark:translate-x-6">
+              <span className="dark:hidden">☀️</span>
+              <span className="hidden dark:inline">🌙</span>
+            </span>
           </button>
         </div>
       </div>

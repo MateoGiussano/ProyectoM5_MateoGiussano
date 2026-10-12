@@ -63,7 +63,6 @@ export function ProductList() {
             key={product.id}
             className="flex flex-col rounded-lg border border-border bg-card p-3 transition hover:shadow-md"
           >
-            {/* Imagen con botón de favoritos encima */}
             <div className="relative rounded-md bg-surface p-4">
               {product.image && (
                 <img
