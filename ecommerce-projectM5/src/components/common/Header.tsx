@@ -8,31 +8,38 @@ export function Header() {
     document.documentElement.classList.toggle("dark", isDark);
   }, []);
 
-
   function handleToggleTheme() {
     document.documentElement.classList.toggle("dark");
   }
 
-   return (
-    <header className="mb-6 rounded-md bg-card p-4 text-foreground shadow-sm">
-      <div className="flex items-center justify-between">
+  return (
+    <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <div className="flex items-center gap-2">
-          {/* Se ve en modo claro, se oculta en oscuro */}
-          <img src={logoClaro} alt="iPhonix" className="h-10 w-auto md:h-16 dark:hidden" />
-          {/* Oculto en modo claro, se ve en oscuro */}
-          <img src={logoDark} alt="iPhonix" className="hidden h-10 w-auto md:h-16 dark:block" />
-          {/* En celular se oculta: el logo ya muestra el nombre */}
-          <span className="text-lg font-bold md:text-xl">iPhonix</span>
+          <img src={logoClaro} alt="iPhonix" className="h-9 w-auto rounded-md dark:hidden" />
+          <img src={logoDark} alt="iPhonix" className="hidden h-9 w-auto rounded-md dark:block" />
+          <span className="text-lg font-semibold tracking-tight">iPhonix</span>
         </div>
 
-        <div className="flex items-center gap-4">
-          <span className="whitespace-nowrap">🛒 0</span>
+        <div className="flex items-center gap-1">
+          {/* Carrito con contador */}
+          <button
+            aria-label="Ver carrito"
+            className="relative rounded-full p-2 hover:bg-surface"
+          >
+            🛒
+            <span className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-medium text-primary-foreground">
+              0
+            </span>
+          </button>
+
+          {/* Cambio de tema */}
           <button
             onClick={handleToggleTheme}
             aria-label="Cambiar tema"
-            className="whitespace-nowrap"
+            className="rounded-full p-2 hover:bg-surface"
           >
-            ☀️ / 🌙
+            🌓
           </button>
         </div>
       </div>

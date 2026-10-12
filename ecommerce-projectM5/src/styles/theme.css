@@ -1,15 +1,13 @@
 /* =========================================
-   Valores que no cambian entre modos.
-   @theme los registra directamente como clases de Tailwind:
-   rounded-sm, rounded-md, rounded-lg y shadow-sm
+   Valores que no cambian entre modos
    ========================================= */
 @theme {
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
 
-  --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.12);
-  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.15);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+  --shadow-md: 0 8px 24px rgb(0 0 0 / 0.08);
 }
 
 /* =========================================
@@ -18,16 +16,16 @@
 :root {
   /* Background */
   --background: #FFFFFF;
-  --surface: #E7ECEF;
+  --surface: #F1F4F6;
   --card: #FFFFFF;
 
   /* Text */
-  --foreground: #274C77;
-  --muted: #34688B;
+  --foreground: #1A2E44;
+  --muted: #5B6B7D;
 
   /* Brand */
-  --primary: #34688B;
-  --primary-hover: #274C77;
+  --primary: #274C77;
+  --primary-hover: #34688B;
   --primary-foreground: #FFFFFF;
 
   /* Feedback */
@@ -39,34 +37,39 @@
   /* Border */
   --border: #E7ECEF;
 
-  /* Spacing (se usan así: p-(--spacing-md)) */
+  /* Spacing */
   --spacing-sm: 4px;
   --spacing-md: 8px;
   --spacing-lg: 12px;
 }
 
 /* =========================================
-   Tema oscuro: solo se pisan fondos y textos
+   Tema oscuro
    ========================================= */
 .dark {
   /* Background */
   --background: #274C77;
   --surface: #1E3A5C;
-  --card: #34688B;
+  --card: #2F5682;
 
   /* Text */
   --foreground: #FFFFFF;
-  --muted: #E7ECEF;
+  --muted: #C9D6E3;
 
-  /* Brand: en oscuro el botón es claro para que contraste */
+  /* Brand: claro para que contraste sobre fondo oscuro */
   --primary: #A3CEF1;
   --primary-hover: #C5E0F7;
   --primary-foreground: #274C77;
+
+  /* Feedback: rojo más claro para que se lea sobre azul */
+  --danger: #FCA5A5;
+
+  /* Border: blanco semitransparente, más sutil que un gris fijo */
+  --border: rgb(255 255 255 / 0.12);
 }
 
 /* =========================================
    Conecta las variables con Tailwind
-   para poder usar bg-primary, text-muted, etc.
    ========================================= */
 @theme inline {
   --color-background: var(--background);
