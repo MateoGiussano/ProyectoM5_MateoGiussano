@@ -3,6 +3,7 @@ import { Header } from "./components/common/Header";
 import { ProductList } from "./components/common/ProductList";
 import { CartList } from "./components/common/CartList";
 
+
 function App(): JSX.Element {
   return (
      <div className="min-h-screen bg-background text-foreground">
