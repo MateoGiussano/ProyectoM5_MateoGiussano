@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ¿Hay alguien logueado?
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // ¿El usuario logueado es admin? Lo averigua leyendo su documento en users.
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    // ---------- USUARIOS ----------
+    match /users/{userId} {
+      // Cada uno lee su propio perfil. El admin lee todos.
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+
+      // Solo podés crear TU perfil, y únicamente como "customer".
+      allow create: if isSignedIn()
+                    && request.auth.uid == userId
+                    && request.resource.data.role == "customer";
+
+      // Nadie modifica ni borra perfiles desde la app (el rol se cambia en la consola).
+      allow update, delete: if false;
+    }
+
+    // ---------- PRODUCTOS ----------
+    match /products/{productId} {
+      // El catálogo es público: cualquiera puede verlo, aunque no tenga sesión.
+      allow read: if true;
+
+      // Solo el admin crea, edita o borra productos.
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ---------- ÓRDENES ----------
+    match /orders/{orderId} {
+      // Cada uno ve sus propias órdenes. El admin ve todas.
+      allow read: if isSignedIn()
+                  && (resource.data.userId == request.auth.uid || isAdmin());
+
+      // Un usuario crea órdenes a SU nombre y siempre en estado "pending".
+      allow create: if isSignedIn()
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.status == "pending";
+
+      // Solo el admin cambia el estado de una orden.
+      allow update: if isAdmin();
+
+      // Las órdenes no se borran: quedan como historial.
+      allow delete: if false;
+    }
+  }
+}
