@@ -1,8 +1,19 @@
 import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { logout } from "../../services/authService";
 import logoClaro from "../../assets/logo_claro.jfif";
 import logoDark from "../../assets/logo_dark.jfif";
 
 export function Header() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+async function handleLogout() {
+  await logout();
+  navigate("/login");
+}
+
   useEffect(() => {
     const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     document.documentElement.classList.toggle("dark", isDark);
@@ -22,6 +33,21 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-1">
+          {!loading && (
+            user ? (
+              <button
+                onClick={handleLogout}
+                className="rounded-full px-3 py-1 text-sm hover:bg-surface"
+              >
+                Salir
+              </button>
+            ) : (
+              <Link to="/login" className="rounded-full px-3 py-1 text-sm hover:bg-surface">
+                Ingresar
+              </Link>
+            )
+          )}
+
           <button
             aria-label="Ver carrito"
             className="relative rounded-full p-2 hover:bg-surface"
