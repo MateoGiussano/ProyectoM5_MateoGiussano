@@ -1,4 +1,4 @@
-export type ProductCategory = 'Estándar' | 'Pro';
+export type ProductCategory = "iPhone" | "iPad" | "Mac" | "Apple Watch" | "AirPods" | "Accesorios";
 
 export interface Product {
     id: string;
