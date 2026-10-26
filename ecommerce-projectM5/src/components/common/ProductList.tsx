@@ -7,7 +7,6 @@ interface ProductListProps {
 export function ProductList({ products }: ProductListProps) {
   return (
     <section>
-      <h2 className="mb-4 text-xl font-semibold tracking-tight">Productos</h2>
 
       {products.length === 0 ? (
         <p className="py-10 text-center text-muted">No hay productos para mostrar.</p>
