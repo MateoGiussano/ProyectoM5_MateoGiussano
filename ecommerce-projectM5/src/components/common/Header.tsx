@@ -1,18 +1,24 @@
 import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { logout } from "../../services/authService";
 import logoClaro from "../../assets/logo_claro.jfif";
 import logoDark from "../../assets/logo_dark.jfif";
 
+function getNavLinkClass({ isActive }: { isActive: boolean }): string {
+  return isActive
+    ? "rounded-md bg-surface px-3 py-1.5 text-sm font-medium"
+    : "rounded-md px-3 py-1.5 text-sm text-muted hover:bg-surface hover:text-foreground";
+}
+
 export function Header() {
-  const { user, loading } = useAuth();
+  const { user, role, loading } = useAuth();
   const navigate = useNavigate();
 
-async function handleLogout() {
-  await logout();
-  navigate("/login");
-}
+  async function handleLogout() {
+    await logout();
+    navigate("/login");
+  }
 
   useEffect(() => {
     const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -25,50 +31,78 @@ async function handleLogout() {
 
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-2">
-          <img src={logoClaro} alt="iPhonix" className="h-9 w-auto rounded-md dark:hidden" />
-          <img src={logoDark} alt="iPhonix" className="hidden h-9 w-auto rounded-md dark:block" />
-          <span className="text-lg font-semibold tracking-tight">iPhonix</span>
+      <div className="mx-auto max-w-6xl px-4 py-3">
+        {/* Fila 1: logo, carrito y tema */}
+        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2">
+            <img src={logoClaro} alt="iPhonix" className="h-9 w-auto rounded-md dark:hidden" />
+            <img src={logoDark} alt="iPhonix" className="hidden h-9 w-auto rounded-md dark:block" />
+            <span className="text-lg font-semibold tracking-tight">iPhonix</span>
+          </Link>
+
+          <div className="flex items-center gap-1">
+            <button
+              aria-label="Ver carrito"
+              className="relative rounded-full p-2 hover:bg-surface"
+            >
+              🛒
+              <span className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-medium text-primary-foreground">
+                0
+              </span>
+            </button>
+
+            <button
+              onClick={handleToggleTheme}
+              aria-label="Cambiar tema"
+              className="h-8 w-14 rounded-full bg-surface p-1 ring-1 ring-border"
+            >
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-card text-xs shadow-sm transition-transform duration-300 dark:translate-x-6">
+                <span className="dark:hidden">☀️</span>
+                <span className="hidden dark:inline">🌙</span>
+              </span>
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-1">
+        {/* Fila 2: menú de navegación */}
+        <nav className="mt-2 flex flex-wrap items-center justify-between gap-1">
+          <div className="flex flex-wrap gap-1">
+            <NavLink to="/" end className={getNavLinkClass}>
+              Inicio
+            </NavLink>
+
+            {!loading && user && (
+              <NavLink to="/orders" className={getNavLinkClass}>
+                Mis órdenes
+              </NavLink>
+            )}
+
+            {!loading && role === "admin" && (
+              <NavLink to="/admin" className={getNavLinkClass}>
+                Admin
+              </NavLink>
+            )}
+          </div>
+
           {!loading && (
-            user ? (
-              <button
-                onClick={handleLogout}
-                className="rounded-full px-3 py-1 text-sm hover:bg-surface"
-              >
-                Salir
-              </button>
-            ) : (
-              <Link to="/login" className="rounded-full px-3 py-1 text-sm hover:bg-surface">
-                Ingresar
-              </Link>
-            )
+            <div className="flex flex-wrap gap-1">
+              {user ? (
+                <button onClick={handleLogout} className={getNavLinkClass({ isActive: false })}>
+                  Salir
+                </button>
+              ) : (
+                <>
+                  <NavLink to="/login" className={getNavLinkClass}>
+                    Ingresar
+                  </NavLink>
+                  <NavLink to="/register" className={getNavLinkClass}>
+                    Registrarse
+                  </NavLink>
+                </>
+              )}
+            </div>
           )}
-
-          <button
-            aria-label="Ver carrito"
-            className="relative rounded-full p-2 hover:bg-surface"
-          >
-            🛒
-            <span className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-medium text-primary-foreground">
-              0
-            </span>
-          </button>
-
-          <button
-            onClick={handleToggleTheme}
-            aria-label="Cambiar tema"
-            className="h-8 w-14 rounded-full bg-surface p-1 ring-1 ring-border"
-          >
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-card text-xs shadow-sm transition-transform duration-300 dark:translate-x-6">
-              <span className="dark:hidden">☀️</span>
-              <span className="hidden dark:inline">🌙</span>
-            </span>
-          </button>
-        </div>
+        </nav>
       </div>
     </header>
   );
