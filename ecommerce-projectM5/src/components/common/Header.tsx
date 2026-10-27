@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { logout } from "../../services/authService";
+import { SearchBar } from "./SearchBar";
 import logoClaro from "../../assets/logo_claro.jfif";
 import logoDark from "../../assets/logo_dark.jfif";
 
@@ -14,6 +15,16 @@ function getNavLinkClass({ isActive }: { isActive: boolean }): string {
 export function Header() {
   const { user, role, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();              
+  const [searchParams] = useSearchParams();    
+
+  
+  const searchTerm = searchParams.get("search") ?? "";
+
+  function handleSearchChange(value: string) {
+    const url = value ? `/?search=${encodeURIComponent(value)}` : "/";
+    navigate(url, { replace: location.pathname === "/" });
+  }
 
   async function handleLogout() {
     await logout();
@@ -32,15 +43,18 @@ export function Header() {
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur">
       <div className="mx-auto max-w-6xl px-4 py-3">
-        {/* Fila 1: logo, carrito y tema */}
-        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Link to="/" className="order-1 flex items-center gap-2">
             <img src={logoClaro} alt="iPhonix" className="h-9 w-auto rounded-md dark:hidden" />
             <img src={logoDark} alt="iPhonix" className="hidden h-9 w-auto rounded-md dark:block" />
             <span className="text-lg font-semibold tracking-tight">iPhonix</span>
           </Link>
 
-          <div className="flex items-center gap-1">
+          <div className="order-3 w-full md:order-2 md:w-auto md:max-w-md md:flex-1">
+            <SearchBar value={searchTerm} onChange={handleSearchChange} />
+          </div>
+
+          <div className="order-2 flex items-center gap-1 md:order-3">
             <button
               aria-label="Ver carrito"
               className="relative rounded-full p-2 hover:bg-surface"
@@ -64,7 +78,6 @@ export function Header() {
           </div>
         </div>
 
-        {/* Fila 2: menú de navegación */}
         <nav className="mt-2 flex flex-wrap items-center justify-between gap-1">
           <div className="flex flex-wrap gap-1">
             <NavLink to="/" end className={getNavLinkClass}>
