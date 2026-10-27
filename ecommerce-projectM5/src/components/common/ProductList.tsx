@@ -1,4 +1,5 @@
 import type { Product } from "../../types/product";
+import { Link } from "react-router-dom";
 
 interface ProductListProps {
   products: Product[];
@@ -18,13 +19,16 @@ export function ProductList({ products }: ProductListProps) {
               className="flex flex-col rounded-lg border border-border bg-card p-3 transition hover:shadow-md"
             >
               <div className="relative rounded-md bg-surface p-4">
-                {product.image && (
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-32 w-full object-contain md:h-40"
-                  />
-                )}
+                <Link to={`/products/${product.id}`}>
+                  {product.image && (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      loading="lazy"
+                      className="h-32 w-full object-contain md:h-40"
+                    />
+                  )}
+                </Link>
                 <button
                   onClick={() => window.confirm("¿Agregar a favoritos?")}
                   aria-label="Agregar a favoritos"
@@ -35,7 +39,9 @@ export function ProductList({ products }: ProductListProps) {
               </div>
 
               <div className="mt-3 flex flex-1 flex-col gap-1">
-                <h3 className="text-sm font-medium">{product.name}</h3>
+                <Link to={`/products/${product.id}`} className="hover:underline">
+                  <h3 className="text-sm font-medium">{product.name}</h3>
+                </Link>
                 <p className="text-lg font-semibold">${product.price}</p>
                 <p className="text-xs text-muted">Stock: {product.stock}</p>
               </div>

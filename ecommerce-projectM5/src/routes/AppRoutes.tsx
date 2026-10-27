@@ -6,6 +6,7 @@ import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { OrdersPage } from "../pages/OrdersPage";
 import { AdminPage } from "../pages/AdminPage";
+import { ProductDetailPage } from "../pages/ProductDetailPage";
 
 export function AppRoutes() {
   return (
@@ -14,6 +15,7 @@ export function AppRoutes() {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/products/:id" element={<ProductDetailPage />} />
 
       {/* Rutas que requieren sesión */}
       <Route
