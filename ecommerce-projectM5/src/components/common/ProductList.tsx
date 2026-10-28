@@ -1,6 +1,7 @@
 import type { Product } from "../../types/product";
 import { Link } from "react-router-dom";
 import { useCart } from "../../hooks/useCart";
+import { FavoriteButton } from "./FavoriteButton";
 
 interface ProductListProps {
   products: Product[];
@@ -9,7 +10,6 @@ interface ProductListProps {
 export function ProductList({ products }: ProductListProps) {
   const { items, addItem } = useCart();
 
-  // Cuántas unidades de este producto ya hay en el carrito.
   function getQuantityInCart(productId: string): number {
     return items.find((item) => item.product.id === productId)?.quantity ?? 0;
   }
@@ -37,13 +37,12 @@ export function ProductList({ products }: ProductListProps) {
                     />
                   )}
                 </Link>
-                <button
-                  onClick={() => window.confirm("¿Agregar a favoritos?")}
-                  aria-label="Agregar a favoritos"
-                  className="absolute top-2 right-2 rounded-full bg-card p-1.5 text-sm shadow-sm hover:scale-110"
-                >
-                  🤍
-                </button>
+
+                <FavoriteButton
+                  productId={product.id}
+                  productName={product.name}
+                  className="absolute top-2 right-2"
+                />
               </div>
 
               <div className="mt-3 flex flex-1 flex-col gap-1">

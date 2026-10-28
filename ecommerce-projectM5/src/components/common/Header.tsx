@@ -7,6 +7,7 @@ import { NavDrawer } from "./NavDrawer";
 import logoClaro from "../../assets/logo_claro.jfif";
 import logoDark from "../../assets/logo_dark.jfif";
 import { useCart } from "../../hooks/useCart";
+import { useFavorites } from "../../hooks/useFavorites";
 
 function getNavLinkClass({ isActive }: { isActive: boolean }): string {
   return isActive
@@ -17,6 +18,7 @@ function getNavLinkClass({ isActive }: { isActive: boolean }): string {
 export function Header() {
   const { user, role, loading } = useAuth();
   const { totalItems } = useCart();
+  const { favoriteIds } = useFavorites();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -87,6 +89,16 @@ export function Header() {
             </div>
 
             <div className="order-2 flex items-center gap-1 md:order-3">
+              <Link
+  to="/favorites"
+  aria-label="Ver favoritos"
+  className="relative rounded-full p-2 hover:bg-surface"
+>
+  ❤️
+  <span className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-medium text-primary-foreground">
+    {favoriteIds.length}
+  </span>
+</Link>
              <Link
               to="/cart"
               aria-label="Ver carrito"

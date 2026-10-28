@@ -9,6 +9,7 @@ import { AdminPage } from "../pages/AdminPage";
 import { ProductDetailPage } from "../pages/ProductDetailPage";
 import { CartPage } from "../pages/CartPage";
 import { CheckoutPage } from "../pages/CheckoutPage";
+import { FavoritesPage } from "../pages/FavoritesPage";
 
 export function AppRoutes() {
   return (
@@ -19,6 +20,7 @@ export function AppRoutes() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/products/:id" element={<ProductDetailPage />} />
       <Route path="/cart" element={<CartPage />} />
+      <Route path="/favorites" element={<FavoritesPage />} />
 
       {/* Rutas que requieren sesión */}
       <Route
