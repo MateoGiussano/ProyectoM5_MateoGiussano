@@ -1,11 +1,19 @@
 import type { Product } from "../../types/product";
 import { Link } from "react-router-dom";
+import { useCart } from "../../hooks/useCart";
 
 interface ProductListProps {
   products: Product[];
 }
 
 export function ProductList({ products }: ProductListProps) {
+  const { items, addItem } = useCart();
+
+  // Cuántas unidades de este producto ya hay en el carrito.
+  function getQuantityInCart(productId: string): number {
+    return items.find((item) => item.product.id === productId)?.quantity ?? 0;
+  }
+
   return (
     <section>
 
@@ -43,14 +51,19 @@ export function ProductList({ products }: ProductListProps) {
                   <h3 className="text-sm font-medium">{product.name}</h3>
                 </Link>
                 <p className="text-lg font-semibold">${product.price}</p>
-                <p className="text-xs text-muted">Stock: {product.stock}</p>
+                <p className="text-xs text-muted">Stock: {product.stock - getQuantityInCart(product.id)}</p>
               </div>
 
               <button
-                onClick={() => window.confirm("¿Agregar al carrito?")}
-                className="mt-3 w-full rounded-full bg-primary py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
+                onClick={() => addItem(product)}
+                disabled={getQuantityInCart(product.id) >= product.stock}
+                className="mt-3 w-full rounded-full bg-primary py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
               >
-                Agregar al carrito
+                {product.stock === 0
+                  ? "Sin stock"
+                  : getQuantityInCart(product.id) >= product.stock
+                    ? "Máximo en carrito"
+                    : "Agregar al carrito"}
               </button>
             </article>
           ))}

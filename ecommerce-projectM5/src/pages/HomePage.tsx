@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ProductList } from "../components/common/ProductList";
-import { CartList } from "../components/common/CartList";
 import { CategoryFilter } from "../components/common/CategoryFilter";
 import { Loading } from "../components/ui/Loading";
 import { useProducts } from "../hooks/useProducts";
@@ -62,7 +61,6 @@ export function HomePage() {
         </>
       )}
 
-      <CartList />
     </>
   );
 }

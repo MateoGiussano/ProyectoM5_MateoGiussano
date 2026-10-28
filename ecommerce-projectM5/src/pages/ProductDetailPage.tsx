@@ -1,10 +1,12 @@
 import { Link, useParams } from "react-router-dom";
 import { Loading } from "../components/ui/Loading";
 import { useProduct } from "../hooks/useProduct";
+import { useCart } from "../hooks/useCart";
 
 export function ProductDetailPage() {
   const { id } = useParams();
   const { product, loading, error } = useProduct(id);
+  const { items, addItem } = useCart();
 
   if (loading) {
     return <Loading />;
@@ -25,7 +27,9 @@ export function ProductDetailPage() {
     );
   }
 
+  const quantityInCart = items.find((item) => item.product.id === product.id)?.quantity ?? 0;
   const hasStock = product.stock > 0;
+  const canAdd = quantityInCart < product.stock;
 
   return (
     <section>
@@ -54,16 +58,25 @@ export function ProductDetailPage() {
           <p className="text-muted">{product.description}</p>
 
           <p className={hasStock ? "text-sm text-muted" : "text-sm text-danger"}>
-            {hasStock ? `Stock disponible: ${product.stock}` : "Sin stock"}
+            {hasStock ? `Stock disponible: ${product.stock - quantityInCart}` : "Sin stock"}
           </p>
 
           <button
-            disabled={!hasStock}
-            onClick={() => window.confirm("¿Agregar al carrito?")}
+            disabled={!canAdd}
+            onClick={() => addItem(product)}
             className="mt-2 rounded-full bg-primary py-3 font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50 md:w-64"
           >
-            {hasStock ? "Agregar al carrito" : "Sin stock"}
+            {!hasStock ? "Sin stock" : canAdd ? "Agregar al carrito" : "Máximo en carrito"}
           </button>
+
+          {quantityInCart > 0 && (
+            <p className="text-sm text-muted">
+              Tenés {quantityInCart} en el carrito.{" "}
+              <Link to="/cart" className="text-primary hover:underline">
+                Ver carrito
+              </Link>
+            </p>
+          )}
         </div>
       </div>
     </section>

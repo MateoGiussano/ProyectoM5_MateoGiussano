@@ -24,7 +24,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state));
     } catch {
-      
+      // Si el navegador no deja guardar (modo privado o sin espacio), el carrito sigue funcionando en memoria.
     }
   }, [state]);
 

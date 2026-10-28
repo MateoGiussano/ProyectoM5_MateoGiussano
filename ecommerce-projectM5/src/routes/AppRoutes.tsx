@@ -7,6 +7,8 @@ import { RegisterPage } from "../pages/RegisterPage";
 import { OrdersPage } from "../pages/OrdersPage";
 import { AdminPage } from "../pages/AdminPage";
 import { ProductDetailPage } from "../pages/ProductDetailPage";
+import { CartPage } from "../pages/CartPage";
+import { CheckoutPage } from "../pages/CheckoutPage";
 
 export function AppRoutes() {
   return (
@@ -16,6 +18,7 @@ export function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/products/:id" element={<ProductDetailPage />} />
+      <Route path="/cart" element={<CartPage />} />
 
       {/* Rutas que requieren sesión */}
       <Route
@@ -23,6 +26,15 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <OrdersPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/checkout"
+        element={
+          <ProtectedRoute>
+            <CheckoutPage />
           </ProtectedRoute>
         }
       />
