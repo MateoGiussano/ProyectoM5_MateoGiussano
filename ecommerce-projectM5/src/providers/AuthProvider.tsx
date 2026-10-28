@@ -21,6 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
           userRole = await getUserRole(firebaseUser.uid);
         } catch {
+            // Si falla la lectura (por ejemplo, sin internet), queda con el permiso mínimo.
         }
         setUser(firebaseUser);
         setRole(userRole);
