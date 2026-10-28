@@ -10,6 +10,7 @@ import { ProductDetailPage } from "../pages/ProductDetailPage";
 import { CartPage } from "../pages/CartPage";
 import { CheckoutPage } from "../pages/CheckoutPage";
 import { FavoritesPage } from "../pages/FavoritesPage";
+import { NotFoundPage } from "../pages/NotFoundPage";
 
 export function AppRoutes() {
   return (
@@ -50,6 +51,9 @@ export function AppRoutes() {
           </AdminRoute>
         }
       />
+
+      {/* Cualquier otra dirección: página 404 (siempre al final) */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
