@@ -21,7 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
           userRole = await getUserRole(firebaseUser.uid);
         } catch {
-            // Si falla la lectura (por ejemplo, sin internet), queda con el permiso mínimo.
+          // Si falla la lectura (por ejemplo, sin internet), queda con el permiso mínimo.
         }
         setUser(firebaseUser);
         setRole(userRole);
@@ -36,11 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return unsubscribe;
   }, []);
 
-const value = useMemo(() => ({ user, role, loading }), [user, role, loading]);
+  const value = useMemo(() => ({ user, role, loading }), [user, role, loading]);
 
-return (
-  <AuthContext.Provider value={value}>
-    {children}
-  </AuthContext.Provider>
-);
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

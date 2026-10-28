@@ -1,10 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  cartReducer,
-  initialCartState,
-  getCartTotal,
-  getCartCount,
-} from "./cartReducer";
+import { cartReducer, initialCartState, getCartTotal, getCartCount } from "./cartReducer";
 import type { CartState } from "./cartReducer";
 import type { Product } from "../types/product";
 
@@ -50,7 +45,7 @@ describe("cartReducer", () => {
       const newState = cartReducer(state, { type: "ADD_ITEM", product });
 
       expect(newState.items[0].quantity).toBe(2);
-      expect(newState).toBe(state); 
+      expect(newState).toBe(state);
     });
 
     it("no agrega un producto sin stock", () => {
@@ -94,7 +89,11 @@ describe("cartReducer", () => {
       const product = createProduct({ stock: 5 });
       const state: CartState = { items: [{ product, quantity: 1 }] };
 
-      const newState = cartReducer(state, { type: "UPDATE_QUANTITY", productId: "p1", quantity: 4 });
+      const newState = cartReducer(state, {
+        type: "UPDATE_QUANTITY",
+        productId: "p1",
+        quantity: 4,
+      });
 
       expect(newState.items[0].quantity).toBe(4);
     });
@@ -103,7 +102,11 @@ describe("cartReducer", () => {
       const product = createProduct({ stock: 3 });
       const state: CartState = { items: [{ product, quantity: 1 }] };
 
-      const newState = cartReducer(state, { type: "UPDATE_QUANTITY", productId: "p1", quantity: 10 });
+      const newState = cartReducer(state, {
+        type: "UPDATE_QUANTITY",
+        productId: "p1",
+        quantity: 10,
+      });
 
       expect(newState.items[0].quantity).toBe(3);
     });
@@ -112,7 +115,11 @@ describe("cartReducer", () => {
       const product = createProduct();
       const state: CartState = { items: [{ product, quantity: 2 }] };
 
-      const newState = cartReducer(state, { type: "UPDATE_QUANTITY", productId: "p1", quantity: 0 });
+      const newState = cartReducer(state, {
+        type: "UPDATE_QUANTITY",
+        productId: "p1",
+        quantity: 0,
+      });
 
       expect(newState.items).toHaveLength(0);
     });

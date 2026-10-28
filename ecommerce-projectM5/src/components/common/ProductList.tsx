@@ -16,7 +16,6 @@ export function ProductList({ products }: ProductListProps) {
 
   return (
     <section>
-
       {products.length === 0 ? (
         <p className="py-10 text-center text-muted">No hay productos para mostrar.</p>
       ) : (
@@ -50,7 +49,9 @@ export function ProductList({ products }: ProductListProps) {
                   <h3 className="text-sm font-medium">{product.name}</h3>
                 </Link>
                 <p className="text-lg font-semibold">${product.price}</p>
-                <p className="text-xs text-muted">Stock: {product.stock - getQuantityInCart(product.id)}</p>
+                <p className="text-xs text-muted">
+                  Stock: {product.stock - getQuantityInCart(product.id)}
+                </p>
               </div>
 
               <button

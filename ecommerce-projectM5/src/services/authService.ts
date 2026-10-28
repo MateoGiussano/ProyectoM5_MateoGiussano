@@ -16,7 +16,11 @@ async function createUserProfile(uid: string, email: string, displayName: string
   await setDoc(doc(db, "users", uid), newUser);
 }
 
-export async function registerWithEmail(displayName: string, email: string, password: string): Promise<void> {
+export async function registerWithEmail(
+  displayName: string,
+  email: string,
+  password: string,
+): Promise<void> {
   const credential = await createUserWithEmailAndPassword(auth, email, password);
   await updateProfile(credential.user, { displayName });
   await createUserProfile(credential.user.uid, email, displayName);

@@ -88,7 +88,10 @@ export function NavDrawer({ isOpen, onClose, onLogout }: NavDrawerProps) {
         {!loading && (
           <div className="mt-auto flex flex-col gap-1 border-t border-border pt-4">
             {user ? (
-              <button onClick={handleLogoutClick} className={getDrawerLinkClass({ isActive: false })}>
+              <button
+                onClick={handleLogoutClick}
+                className={getDrawerLinkClass({ isActive: false })}
+              >
                 Salir
               </button>
             ) : (
@@ -106,4 +109,4 @@ export function NavDrawer({ isOpen, onClose, onLogout }: NavDrawerProps) {
       </aside>
     </div>
   );
-}  
+}

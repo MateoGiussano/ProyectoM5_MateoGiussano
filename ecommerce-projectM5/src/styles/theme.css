@@ -15,27 +15,27 @@
    ========================================= */
 :root {
   /* Background */
-  --background: #FFFFFF;
-  --surface: #F1F4F6;
-  --card: #FFFFFF;
+  --background: #ffffff;
+  --surface: #f1f4f6;
+  --card: #ffffff;
 
   /* Text */
-  --foreground: #1A2E44;
-  --muted: #5B6B7D;
+  --foreground: #1a2e44;
+  --muted: #5b6b7d;
 
   /* Brand */
-  --primary: #274C77;
-  --primary-hover: #34688B;
-  --primary-foreground: #FFFFFF;
+  --primary: #274c77;
+  --primary-hover: #34688b;
+  --primary-foreground: #ffffff;
 
   /* Feedback */
-  --info: #34688B;
-  --success: #16A34A;
-  --warning: #D97706;
-  --danger: #DC2626;
+  --info: #34688b;
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
 
   /* Border */
-  --border: #E7ECEF;
+  --border: #e7ecef;
 
   /* Spacing */
   --spacing-sm: 4px;
@@ -48,21 +48,21 @@
    ========================================= */
 .dark {
   /* Background */
-  --background: #274C77;
-  --surface: #1E3A5C;
-  --card: #2F5682;
+  --background: #274c77;
+  --surface: #1e3a5c;
+  --card: #2f5682;
 
   /* Text */
-  --foreground: #FFFFFF;
-  --muted: #C9D6E3;
+  --foreground: #ffffff;
+  --muted: #c9d6e3;
 
   /* Brand: claro para que contraste sobre fondo oscuro */
-  --primary: #A3CEF1;
-  --primary-hover: #C5E0F7;
-  --primary-foreground: #274C77;
+  --primary: #a3cef1;
+  --primary-hover: #c5e0f7;
+  --primary-foreground: #274c77;
 
   /* Feedback: rojo más claro para que se lea sobre azul */
-  --danger: #FCA5A5;
+  --danger: #fca5a5;
 
   /* Border: blanco semitransparente, más sutil que un gris fijo */
   --border: rgb(255 255 255 / 0.12);

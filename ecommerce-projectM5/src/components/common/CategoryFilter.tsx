@@ -1,6 +1,13 @@
 import type { ProductCategory } from "../../types/product";
 
-const categories: ProductCategory[] = ["iPhone", "iPad", "Mac", "Apple Watch", "AirPods", "Accesorios"];
+const categories: ProductCategory[] = [
+  "iPhone",
+  "iPad",
+  "Mac",
+  "Apple Watch",
+  "AirPods",
+  "Accesorios",
+];
 
 interface CategoryFilterProps {
   selectedCategory: ProductCategory | null;

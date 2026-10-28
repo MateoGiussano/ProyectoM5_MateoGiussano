@@ -24,7 +24,7 @@ export function HomePage() {
   });
 
   function handleClearFilters() {
-    setSearchParams({}, { replace: true });   // borra "?search=" de la URL
+    setSearchParams({}, { replace: true }); // borra "?search=" de la URL
     setSelectedCategory(null);
   }
 
@@ -45,9 +45,7 @@ export function HomePage() {
 
           {filteredProducts.length === 0 ? (
             <div className="py-10 text-center">
-              <p className="text-muted">
-                No encontramos productos que coincidan con tu búsqueda.
-              </p>
+              <p className="text-muted">No encontramos productos que coincidan con tu búsqueda.</p>
               <button
                 onClick={handleClearFilters}
                 className="mt-3 rounded-full border border-border px-4 py-1.5 text-sm hover:bg-surface"
@@ -60,7 +58,6 @@ export function HomePage() {
           )}
         </>
       )}
-
     </>
   );
 }

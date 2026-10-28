@@ -35,10 +35,10 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         setFavoriteIds((currentIds) =>
           currentIds.includes(productId)
             ? currentIds.filter((id) => id !== productId)
-            : [...currentIds, productId]
+            : [...currentIds, productId],
         ),
     }),
-    [favoriteIds]
+    [favoriteIds],
   );
 
   return <FavoritesContext.Provider value={value}>{children}</FavoritesContext.Provider>;

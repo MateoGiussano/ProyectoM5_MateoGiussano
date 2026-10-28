@@ -1,7 +1,6 @@
 import type { CartItem } from "../types/cartItem";
 import type { Product } from "../types/product";
 
-
 export interface CartState {
   items: CartItem[];
 }
@@ -16,7 +15,6 @@ export const initialCartState: CartState = {
   items: [],
 };
 
-
 export function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "ADD_ITEM": {
@@ -28,9 +26,7 @@ export function cartReducer(state: CartState, action: CartAction): CartState {
         }
         return {
           items: state.items.map((item) =>
-            item.product.id === action.product.id
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
+            item.product.id === action.product.id ? { ...item, quantity: item.quantity + 1 } : item,
           ),
         };
       }
@@ -59,7 +55,7 @@ export function cartReducer(state: CartState, action: CartAction): CartState {
         items: state.items.map((item) =>
           item.product.id === action.productId
             ? { ...item, quantity: Math.min(action.quantity, item.product.stock) }
-            : item
+            : item,
         ),
       };
     }

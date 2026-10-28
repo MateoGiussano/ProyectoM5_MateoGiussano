@@ -55,9 +55,9 @@ export function ProductDetailPage() {
           </span>
 
           <div className="flex items-start justify-between gap-3">
-  <h2 className="text-2xl font-semibold tracking-tight">{product.name}</h2>
-  <FavoriteButton productId={product.id} productName={product.name} className="text-xl" />
-</div>
+            <h2 className="text-2xl font-semibold tracking-tight">{product.name}</h2>
+            <FavoriteButton productId={product.id} productName={product.name} className="text-xl" />
+          </div>
           <p className="text-3xl font-semibold">${product.price}</p>
           <p className="text-muted">{product.description}</p>
 
@@ -65,22 +65,22 @@ export function ProductDetailPage() {
             {hasStock ? `Stock disponible: ${product.stock}` : "Sin stock"}
           </p>
 
-            <button
+          <button
             disabled={!canAdd}
             onClick={() => addItem(product)}
             className="mt-2 rounded-full bg-primary py-3 font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50 md:w-64"
-            >
+          >
             {!hasStock ? "Sin stock" : canAdd ? "Agregar al carrito" : "Máximo en carrito"}
-            </button>
+          </button>
 
-{quantityInCart > 0 && (
-  <p className="text-sm text-muted">
-    Tenés {quantityInCart} en el carrito.{" "}
-    <Link to="/cart" className="text-primary hover:underline">
-      Ver carrito
-    </Link>
-  </p>
-)}
+          {quantityInCart > 0 && (
+            <p className="text-sm text-muted">
+              Tenés {quantityInCart} en el carrito.{" "}
+              <Link to="/cart" className="text-primary hover:underline">
+                Ver carrito
+              </Link>
+            </p>
+          )}
         </div>
       </div>
     </section>

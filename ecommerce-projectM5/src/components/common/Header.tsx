@@ -22,7 +22,7 @@ export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);  
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const searchTerm = searchParams.get("search") ?? "";
 
@@ -79,7 +79,11 @@ export function Header() {
 
               <Link to="/" className="flex items-center gap-2">
                 <img src={logoClaro} alt="iPhonix" className="h-9 w-auto rounded-md dark:hidden" />
-                <img src={logoDark} alt="iPhonix" className="hidden h-9 w-auto rounded-md dark:block" />
+                <img
+                  src={logoDark}
+                  alt="iPhonix"
+                  className="hidden h-9 w-auto rounded-md dark:block"
+                />
                 <span className="text-lg font-semibold tracking-tight">iPhonix</span>
               </Link>
             </div>
@@ -90,25 +94,25 @@ export function Header() {
 
             <div className="order-2 flex items-center gap-1 md:order-3">
               <Link
-  to="/favorites"
-  aria-label="Ver favoritos"
-  className="relative rounded-full p-2 hover:bg-surface"
->
-  ❤️
-  <span className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-medium text-primary-foreground">
-    {favoriteIds.length}
-  </span>
-</Link>
-             <Link
-              to="/cart"
-              aria-label="Ver carrito"
-              className="relative rounded-full p-2 hover:bg-surface"
-            >
-              🛒
-              <span className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-medium text-primary-foreground">
-                {totalItems}
-              </span>
-            </Link>
+                to="/favorites"
+                aria-label="Ver favoritos"
+                className="relative rounded-full p-2 hover:bg-surface"
+              >
+                ❤️
+                <span className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-medium text-primary-foreground">
+                  {favoriteIds.length}
+                </span>
+              </Link>
+              <Link
+                to="/cart"
+                aria-label="Ver carrito"
+                className="relative rounded-full p-2 hover:bg-surface"
+              >
+                🛒
+                <span className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-medium text-primary-foreground">
+                  {totalItems}
+                </span>
+              </Link>
 
               <button
                 onClick={handleToggleTheme}

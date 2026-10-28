@@ -76,7 +76,10 @@ export function CartList() {
       </ul>
 
       <div className="mt-4 flex flex-col gap-3 border-t border-border pt-4 md:flex-row md:items-end md:justify-between">
-        <button onClick={() => setIsConfirmOpen(true)} className="w-fit text-sm text-danger hover:underline">
+        <button
+          onClick={() => setIsConfirmOpen(true)}
+          className="w-fit text-sm text-danger hover:underline"
+        >
           Vaciar carrito
         </button>
 

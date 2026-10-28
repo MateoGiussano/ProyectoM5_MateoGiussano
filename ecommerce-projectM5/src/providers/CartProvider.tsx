@@ -19,7 +19,6 @@ function loadCartFromStorage(fallback: CartState): CartState {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialCartState, loadCartFromStorage);
 
-
   useEffect(() => {
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state));
@@ -39,7 +38,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         dispatch({ type: "UPDATE_QUANTITY", productId, quantity }),
       clearCart: () => dispatch({ type: "CLEAR_CART" }),
     }),
-    [state.items]
+    [state.items],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
