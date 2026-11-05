@@ -29,7 +29,9 @@ export function CheckoutPage() {
       setCreatedOrderId(orderId);
     } catch (err) {
       console.error("Error al crear la orden:", err);
-      setError("No pudimos confirmar tu compra. Tu carrito sigue intacto: probá de nuevo en unos segundos.");
+      setError(
+        "No pudimos confirmar tu compra. Tu carrito sigue intacto: probá de nuevo en unos segundos.",
+      );
     } finally {
       isSubmittingRef.current = false;
       setSubmitting(false);
@@ -45,10 +47,10 @@ export function CheckoutPage() {
         <p className="font-mono text-sm">{createdOrderId}</p>
         <div className="mt-4 flex flex-col gap-2">
           <Link
-            to="/orders"
+            to={`/orders/${createdOrderId}`}
             className="rounded-full bg-primary py-2 font-medium text-primary-foreground hover:bg-primary-hover"
           >
-            Ver mis órdenes
+            Ver detalle de la orden
           </Link>
           <Link to="/" className="text-sm text-primary hover:underline">
             Seguir comprando

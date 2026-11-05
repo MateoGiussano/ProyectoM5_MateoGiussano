@@ -1,8 +1,19 @@
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  serverTimestamp,
+  where,
+} from "firebase/firestore";
+import { FirebaseError } from "firebase/app";
 import { db } from "./firebase";
 import { getCartTotal } from "../reducers/cartReducer";
 import type { CartItem } from "../types/cartItem";
-import type { OrderItem } from "../types/order";
+import type { Order, OrderItem } from "../types/order";
 
 export async function createOrder(
   userId: string,
@@ -27,4 +38,33 @@ export async function createOrder(
   });
 
   return orderRef.id;
+}
+
+export async function getOrdersByUser(userId: string): Promise<Order[]> {
+  const ordersQuery = query(
+    collection(db, "orders"),
+    where("userId", "==", userId),
+    orderBy("createdAt", "desc"),
+  );
+  const snapshot = await getDocs(ordersQuery);
+
+  return snapshot.docs.map((orderDoc) => ({
+    id: orderDoc.id,
+    ...(orderDoc.data() as Omit<Order, "id">),
+  }));
+}
+
+export async function getOrderById(orderId: string): Promise<Order | null> {
+  try {
+    const orderDoc = await getDoc(doc(db, "orders", orderId));
+    if (!orderDoc.exists()) {
+      return null;
+    }
+    return { id: orderDoc.id, ...(orderDoc.data() as Omit<Order, "id">) };
+  } catch (error) {
+    if (error instanceof FirebaseError && error.code === "permission-denied") {
+      return null;
+    }
+    throw error;
+  }
 }

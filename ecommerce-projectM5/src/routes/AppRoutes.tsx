@@ -11,6 +11,7 @@ import { CartPage } from "../pages/CartPage";
 import { CheckoutPage } from "../pages/CheckoutPage";
 import { FavoritesPage } from "../pages/FavoritesPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
+import { OrderDetailPage } from "../pages/OrderDetailPage";
 
 export function AppRoutes() {
   return (
@@ -29,6 +30,15 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <OrdersPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/orders/:id"
+        element={
+          <ProtectedRoute>
+            <OrderDetailPage />
           </ProtectedRoute>
         }
       />

@@ -10,7 +10,6 @@ interface ConfirmDialogProps {
   onCancel: () => void;
 }
 
-// Ventana de confirmación reutilizable (reemplaza a window.confirm).
 export function ConfirmDialog({
   isOpen,
   title,
@@ -20,7 +19,6 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  // Mientras está abierta, la tecla Esc la cierra (igual que "Cancelar").
   useEffect(() => {
     if (!isOpen) {
       return;
