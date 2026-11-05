@@ -1,11 +1,21 @@
-import type { CartItem } from "./cartItem";
+import type { Timestamp } from "firebase/firestore";
+
 export type OrderStatus = "pending" | "processing" | "completed" | "cancelled";
+
+export interface OrderItem {
+  productId: string;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
 
 export interface Order {
   id: string;
   userId: string;
-  items: CartItem[];
+  userEmail: string;
+  items: OrderItem[];
   total: number;
   status: OrderStatus;
-  createdAt: string;
+  createdAt: Timestamp;
 }
