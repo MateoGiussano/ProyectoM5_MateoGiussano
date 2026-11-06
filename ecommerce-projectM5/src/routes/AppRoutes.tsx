@@ -17,6 +17,7 @@ import { AdminDashboardPage } from "../pages/admin/AdminDashboardPage";
 import { AdminProductsPage } from "../pages/admin/AdminProductsPage";
 import { AdminProductFormPage } from "../pages/admin/AdminProductFormPage";
 import { AdminOrdersPage } from "../pages/admin/AdminOrdersPage";
+import { AdminProductsProvider } from "../providers/AdminProductsProvider";
 
 export function AppRoutes() {
   return (
@@ -66,7 +67,9 @@ export function AppRoutes() {
         path="/admin"
         element={
           <AdminRoute>
-            <AdminLayout />
+            <AdminProductsProvider>
+              <AdminLayout />
+            </AdminProductsProvider>
           </AdminRoute>
         }
       >

@@ -1,3 +1,5 @@
+import type { Timestamp } from "firebase/firestore";
+
 export type ProductCategory = "iPhone" | "iPad" | "Mac" | "Apple Watch" | "AirPods" | "Accesorios";
 
 export interface Product {
@@ -8,4 +10,8 @@ export interface Product {
   price: number;
   stock: number;
   category: ProductCategory;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
+
+export type ProductInput = Omit<Product, "id" | "createdAt" | "updatedAt">;

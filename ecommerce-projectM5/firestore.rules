@@ -13,6 +13,18 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
     }
 
+    // ¿Los datos de un producto son válidos?
+    function isValidProduct(data) {
+      return data.keys().hasOnly(
+               ["name", "image", "description", "price", "stock", "category", "createdAt", "updatedAt"])
+          && data.name is string && data.name.size() > 0
+          && data.description is string
+          && data.image is string
+          && data.price is number && data.price > 0
+          && data.stock is int && data.stock >= 0
+          && data.category in ["iPhone", "iPad", "Mac", "Apple Watch", "AirPods", "Accesorios"];
+    }
+
     // ---------- USUARIOS ----------
     match /users/{userId} {
       // Cada uno lee su propio perfil. El admin lee todos.
@@ -32,11 +44,22 @@ service cloud.firestore {
       // El catálogo es público: cualquiera puede verlo, aunque no tenga sesión.
       allow read: if true;
 
-      // Solo el admin crea, edita o borra productos.
-      allow create, update, delete: if isAdmin();
+      // Solo el admin crea productos, con datos válidos y la fecha del servidor.
+      allow create: if isAdmin()
+                    && isValidProduct(request.resource.data)
+                    && request.resource.data.createdAt == request.time
+                    && request.resource.data.updatedAt == request.time;
+
+      // Solo el admin edita: el producto tiene que quedar válido y con fecha de edición nueva.
+      allow update: if isAdmin()
+                    && isValidProduct(request.resource.data)
+                    && request.resource.data.updatedAt == request.time;
+
+      // Solo el admin borra.
+      allow delete: if isAdmin();
     }
 
-        // ---------- ÓRDENES ----------
+    // ---------- ÓRDENES ----------
     match /orders/{orderId} {
       // Cada uno ve sus propias órdenes. El admin ve todas.
       allow read: if isSignedIn()

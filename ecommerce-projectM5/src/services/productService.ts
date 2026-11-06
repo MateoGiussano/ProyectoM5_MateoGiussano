@@ -1,6 +1,15 @@
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "./firebase";
-import type { Product } from "../types/product";
+import type { Product, ProductInput } from "../types/product";
 
 export async function getProducts(): Promise<Product[]> {
   const snapshot = await getDocs(collection(db, "products"));
@@ -22,4 +31,24 @@ export async function getProductById(id: string): Promise<Product | null> {
     id: productDoc.id,
     ...(productDoc.data() as Omit<Product, "id">),
   };
+}
+
+export async function createProduct(product: ProductInput): Promise<string> {
+  const productRef = await addDoc(collection(db, "products"), {
+    ...product,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+  return productRef.id;
+}
+
+export async function updateProduct(id: string, changes: Partial<ProductInput>): Promise<void> {
+  await updateDoc(doc(db, "products", id), {
+    ...changes,
+    updatedAt: serverTimestamp(),
+  });
+}
+
+export async function deleteProduct(id: string): Promise<void> {
+  await deleteDoc(doc(db, "products", id));
 }
