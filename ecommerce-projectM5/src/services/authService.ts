@@ -4,9 +4,11 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  onAuthStateChanged,
   signOut,
   updateProfile,
 } from "firebase/auth";
+import type { User as FirebaseUser } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import type { User, UserRole } from "../types/user";
@@ -69,4 +71,12 @@ export function getAuthErrorMessage(error: unknown): string {
     }
   }
   return "Ocurrió un error. Intentá de nuevo.";
+}
+
+// Avisa cada vez que cambia la sesión (login, logout o al recargar la página).
+// Devuelve la función para dejar de escuchar.
+export function subscribeToAuthChanges(
+  callback: (firebaseUser: FirebaseUser | null) => void,
+): () => void {
+  return onAuthStateChanged(auth, callback);
 }

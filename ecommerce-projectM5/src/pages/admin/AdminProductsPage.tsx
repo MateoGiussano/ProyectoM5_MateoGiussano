@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ProductsTable } from "../../components/admin/ProductsTable";
 import { ProductsTableSkeleton } from "../../components/admin/ProductsTableSkeleton";
 import { ConfirmDialog } from "../../components/ui/ConfirmDialog";
@@ -16,7 +16,11 @@ export function AdminProductsPage() {
   const { products, loading, error, reloadProducts, deleteProduct } = useAdminProducts();
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [actionMessage, setActionMessage] = useState<ActionMessage | null>(null);
+  const location = useLocation();
+  const [actionMessage, setActionMessage] = useState<ActionMessage | null>(() => {
+    const message = (location.state as { message?: string } | null)?.message;
+    return message ? { type: "success", text: message } : null;
+  });
 
   async function handleConfirmDelete() {
     if (!productToDelete) {
@@ -24,8 +28,8 @@ export function AdminProductsPage() {
     }
 
     const product = productToDelete;
-    setProductToDelete(null); // cerramos la ventana
-    setDeletingId(product.id); // esa fila muestra "Eliminando…"
+    setProductToDelete(null);
+    setDeletingId(product.id);
     setActionMessage(null);
 
     try {

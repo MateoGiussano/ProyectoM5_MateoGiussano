@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { onAuthStateChanged } from "firebase/auth";
 import type { User as FirebaseUser } from "firebase/auth";
-import { auth } from "../services/firebase";
-import { getUserRole } from "../services/authService";
+import { getUserRole, subscribeToAuthChanges } from "../services/authService";
 import { AuthContext } from "../contexts/AuthContext";
 import type { UserRole } from "../types/user";
 
@@ -13,7 +11,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    const unsubscribe = subscribeToAuthChanges(async (firebaseUser) => {
       setLoading(true);
 
       if (firebaseUser) {
