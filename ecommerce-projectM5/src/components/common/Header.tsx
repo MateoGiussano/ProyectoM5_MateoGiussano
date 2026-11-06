@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { logout } from "../../services/authService";
@@ -8,6 +8,7 @@ import logoClaro from "../../assets/logo_claro.jfif";
 import logoDark from "../../assets/logo_dark.jfif";
 import { useCart } from "../../hooks/useCart";
 import { useFavorites } from "../../hooks/useFavorites";
+import { ThemeToggle } from "./ThemeToggle";
 
 function getNavLinkClass({ isActive }: { isActive: boolean }): string {
   return isActive
@@ -39,20 +40,10 @@ export function Header() {
     setIsMenuOpen(false);
   }
 
-  useEffect(() => {
-    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    document.documentElement.classList.toggle("dark", isDark);
-  }, []);
-
-  function handleToggleTheme() {
-    document.documentElement.classList.toggle("dark");
-  }
-
   return (
     <>
       <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur">
         <div className="mx-auto max-w-6xl px-4 py-3">
-          {/* Fila 1: menú (celular), logo, buscador, carrito y tema */}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="order-1 flex items-center gap-2">
               <button
@@ -114,16 +105,7 @@ export function Header() {
                 </span>
               </Link>
 
-              <button
-                onClick={handleToggleTheme}
-                aria-label="Cambiar tema"
-                className="h-8 w-14 rounded-full bg-surface p-1 ring-1 ring-border"
-              >
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-card text-xs shadow-sm transition-transform duration-300 dark:translate-x-6">
-                  <span className="dark:hidden">☀️</span>
-                  <span className="hidden dark:inline">🌙</span>
-                </span>
-              </button>
+              <ThemeToggle />
             </div>
           </div>
 

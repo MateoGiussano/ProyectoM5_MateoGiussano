@@ -20,8 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         let userRole: UserRole = "customer";
         try {
           userRole = await getUserRole(firebaseUser.uid);
-        } catch {
-        }
+        } catch {}
         setUser(firebaseUser);
         setRole(userRole);
       } else {

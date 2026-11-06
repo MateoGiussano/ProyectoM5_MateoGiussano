@@ -22,8 +22,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state));
-    } catch {
-    }
+    } catch {}
   }, [state]);
 
   const value = useMemo(
