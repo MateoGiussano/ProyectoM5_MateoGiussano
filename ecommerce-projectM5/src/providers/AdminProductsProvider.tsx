@@ -30,7 +30,12 @@ export function AdminProductsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    fetchProducts();
+    // Mismo patrón que useProducts: la función async se define adentro del efecto.
+    async function loadInitialProducts() {
+      await fetchProducts();
+    }
+
+    loadInitialProducts();
   }, [fetchProducts]);
 
   const reloadProducts = useCallback(async () => {
