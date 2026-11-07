@@ -49,6 +49,19 @@ export function validateProductForm(fields: ProductFormFields): ProductFormError
   return errors;
 }
 
+export const MAX_IMAGE_SIZE_MB = 2;
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+export function validateImageFile(file: File): string | null {
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    return "La imagen tiene que ser JPG, PNG o WebP.";
+  }
+  if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+    return `La imagen no puede pesar más de ${MAX_IMAGE_SIZE_MB} MB.`;
+  }
+  return null;
+}
+
 export function toProductInput(fields: ProductFormFields): ProductInput {
   return {
     name: fields.name.trim(),

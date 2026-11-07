@@ -1,13 +1,19 @@
-import { useRef, useState } from "react";
-import type { FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import type { ProductCategory, ProductInput } from "../../types/product";
 import type {
   ProductFormErrors,
   ProductFormFields,
   ProductFormStatus,
 } from "../../types/productForm";
-import { toProductInput, validateProductForm } from "../../utils/productForm";
+import {
+  MAX_IMAGE_SIZE_MB,
+  toProductInput,
+  validateImageFile,
+  validateProductForm,
+} from "../../utils/productForm";
 import { getFirestoreErrorMessage } from "../../utils/getFirestoreErrorMessage";
+import { uploadImage } from "../../services/uploadService";
 
 const categories: ProductCategory[] = [
   "iPhone",
@@ -36,10 +42,26 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, onCancel }: 
   const [touched, setTouched] = useState<Partial<Record<ValidatedField, boolean>>>({});
   const [status, setStatus] = useState<ProductFormStatus>("editing");
   const [globalError, setGlobalError] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
   const isSubmittingRef = useRef(false);
 
+  const previewUrl = useMemo(
+    () => (imageFile ? URL.createObjectURL(imageFile) : null),
+    [imageFile],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   const errors = validateProductForm(fields);
-  const isSubmitting = status === "submitting";
+  const isBusy = status === "uploading" || status === "submitting";
+  const preview = previewUrl ?? fields.image;
 
   function handleChange(field: keyof ProductFormFields, value: string) {
     setFields((current) => ({ ...current, [field]: value }));
@@ -51,6 +73,17 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, onCancel }: 
 
   function getVisibleError(field: ValidatedField): string | undefined {
     return touched[field] ? errors[field] : undefined;
+  }
+
+  function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0] ?? null;
+    const error = file ? validateImageFile(file) : null;
+
+    setImageError(error);
+    setImageFile(error ? null : file);
+    if (error) {
+      event.target.value = "";
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -66,16 +99,30 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, onCancel }: 
     }
 
     isSubmittingRef.current = true;
-    setStatus("submitting");
     setGlobalError(null);
+    let step: "upload" | "save" = "upload";
+    let image = fields.image;
 
     try {
-      await onSubmit(toProductInput(fields));
+      if (imageFile) {
+        setStatus("uploading");
+        image = await uploadImage(imageFile);
+        setFields((current) => ({ ...current, image }));
+        setImageFile(null);
+      }
+
+      step = "save";
+      setStatus("submitting");
+      await onSubmit({ ...toProductInput(fields), image });
     } catch (err) {
       console.error("Error al guardar el producto:", err);
-      setGlobalError(
-        getFirestoreErrorMessage(err, "No se pudo guardar el producto. Intentá de nuevo."),
-      );
+      if (step === "upload") {
+        setGlobalError(err instanceof Error ? err.message : "No se pudo subir la imagen.");
+      } else {
+        setGlobalError(
+          getFirestoreErrorMessage(err, "No se pudo guardar el producto. Intentá de nuevo."),
+        );
+      }
       setStatus("error");
     } finally {
       isSubmittingRef.current = false;
@@ -93,7 +140,7 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, onCancel }: 
       noValidate
       className="rounded-lg border border-border bg-card p-4 md:p-6"
     >
-      <fieldset disabled={isSubmitting} className="grid gap-4 md:grid-cols-2">
+      <fieldset disabled={isBusy} className="grid gap-4 md:grid-cols-2">
         <div className="md:col-span-2">
           <label htmlFor="name" className="mb-1 block text-sm font-medium">
             Nombre *
@@ -188,25 +235,36 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, onCancel }: 
           )}
         </div>
 
-        <div>
+        <div className="md:col-span-2">
           <label htmlFor="image" className="mb-1 block text-sm font-medium">
-            Imagen (ruta o URL)
+            Imagen (JPG, PNG o WebP, hasta {MAX_IMAGE_SIZE_MB} MB)
           </label>
           <input
             id="image"
-            type="text"
-            placeholder="/products/iphone-15.png"
-            value={fields.image}
-            onChange={(event) => handleChange("image", event.target.value)}
-            className="w-full"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleImageChange}
+            aria-invalid={Boolean(imageError)}
+            aria-describedby={imageError ? "image-error" : undefined}
+            className="w-full text-sm"
           />
+          {imageError && (
+            <p id="image-error" className="mt-1 text-sm text-danger">
+              {imageError}
+            </p>
+          )}
+          {fields.image && !imageFile && (
+            <p className="mt-1 text-xs text-muted">
+              Si no elegís otra, se mantiene la imagen actual.
+            </p>
+          )}
         </div>
 
-        {fields.image && (
+        {preview && (
           <div className="md:col-span-2">
             <span className="mb-1 block text-sm text-muted">Vista previa</span>
             <img
-              src={fields.image}
+              src={preview}
               alt="Vista previa del producto"
               className="h-32 w-32 rounded-md bg-surface object-contain p-2"
             />
@@ -237,17 +295,21 @@ export function ProductForm({ initialValues, submitLabel, onSubmit, onCancel }: 
         <button
           type="button"
           onClick={onCancel}
-          disabled={isSubmitting}
+          disabled={isBusy}
           className="rounded-full border border-border px-4 py-2 text-sm hover:bg-surface disabled:opacity-50"
         >
           Cancelar
         </button>
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isBusy}
           className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
         >
-          {isSubmitting ? "Guardando…" : submitLabel}
+          {status === "uploading"
+            ? "Subiendo imagen…"
+            : status === "submitting"
+              ? "Guardando…"
+              : submitLabel}
         </button>
       </div>
     </form>

@@ -16,4 +16,4 @@ export interface ProductFormErrors {
   category?: string;
 }
 
-export type ProductFormStatus = "editing" | "submitting" | "error";
+export type ProductFormStatus = "editing" | "uploading" | "submitting" | "error";
