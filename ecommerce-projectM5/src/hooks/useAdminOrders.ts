@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllOrders } from "../services/orderService";
+import { getAllOrders, updateOrderStatus } from "../services/orderService";
 import { getFirestoreErrorMessage } from "../utils/getFirestoreErrorMessage";
 import type { Order, OrderStatus } from "../types/order";
 
@@ -40,6 +40,19 @@ export function useAdminOrders(filter: OrderStatusFilter) {
     };
   }, [filter]);
 
+  async function changeStatus(orderId: string, status: OrderStatus) {
+    await updateOrderStatus(orderId, status);
+    setResult(
+      (current) =>
+        current && {
+          ...current,
+          orders: current.orders
+            .map((order) => (order.id === orderId ? { ...order, status } : order))
+            .filter((order) => current.filter === "all" || order.status === current.filter),
+        },
+    );
+  }
+
   const loading = result?.filter !== filter;
-  return { orders: result?.orders ?? [], error: result?.error ?? "", loading };
+  return { orders: result?.orders ?? [], error: result?.error ?? "", loading, changeStatus };
 }

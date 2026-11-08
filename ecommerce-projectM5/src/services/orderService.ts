@@ -7,6 +7,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
@@ -80,4 +81,11 @@ export async function getAllOrders(status?: OrderStatus): Promise<Order[]> {
     id: orderDoc.id,
     ...(orderDoc.data() as Omit<Order, "id">),
   }));
+}
+
+export async function updateOrderStatus(orderId: string, status: OrderStatus): Promise<void> {
+  await updateDoc(doc(db, "orders", orderId), {
+    status,
+    updatedAt: serverTimestamp(),
+  });
 }

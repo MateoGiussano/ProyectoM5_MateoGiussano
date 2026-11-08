@@ -18,4 +18,5 @@ export interface Order {
   total: number;
   status: OrderStatus;
   createdAt: Timestamp;
+  updatedAt?: Timestamp;
 }

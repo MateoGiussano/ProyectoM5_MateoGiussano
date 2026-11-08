@@ -25,6 +25,12 @@ service cloud.firestore {
           && data.category in ["iPhone", "iPad", "Mac", "Apple Watch", "AirPods", "Accesorios"];
     }
 
+    // ¿Se puede pasar del estado "from" al estado "to"? completed y cancelled son terminales.
+    function isValidTransition(from, to) {
+      return (from == "pending" && to in ["processing", "cancelled"])
+          || (from == "processing" && to in ["completed", "cancelled"]);
+    }
+
     // ---------- USUARIOS ----------
     match /users/{userId} {
       // Cada uno lee su propio perfil. El admin lee todos.
@@ -78,10 +84,12 @@ service cloud.firestore {
                     && request.resource.data.total is number
                     && request.resource.data.total > 0;
 
-      // Solo el admin cambia el estado, y SOLO el estado, a un valor válido.
+      // Solo el admin cambia el estado: toca SOLO status y updatedAt, con la fecha
+      // del servidor y respetando la máquina de estados.
       allow update: if isAdmin()
-                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status"])
-                    && request.resource.data.status in ["pending", "processing", "completed", "cancelled"];
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt"])
+                    && request.resource.data.updatedAt == request.time
+                    && isValidTransition(resource.data.status, request.resource.data.status);
 
       // Las órdenes no se borran: quedan como historial.
       allow delete: if false;
