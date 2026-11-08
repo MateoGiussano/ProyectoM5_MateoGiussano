@@ -1,11 +1,5 @@
 import type { OrderStatus } from "../../types/order";
-
-const statusLabels: Record<OrderStatus, string> = {
-  pending: "Pendiente",
-  processing: "En preparación",
-  completed: "Completada",
-  cancelled: "Cancelada",
-};
+import { orderStatusLabels } from "../../utils/orderStatus";
 
 const statusClasses: Record<OrderStatus, string> = {
   pending: "bg-warning/15 text-warning",
@@ -17,7 +11,7 @@ const statusClasses: Record<OrderStatus, string> = {
 export function OrderStatusBadge({ status }: { status: OrderStatus }) {
   return (
     <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusClasses[status]}`}>
-      {statusLabels[status]}
+      {orderStatusLabels[status]}
     </span>
   );
 }

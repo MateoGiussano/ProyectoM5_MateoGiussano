@@ -13,7 +13,7 @@ import { FirebaseError } from "firebase/app";
 import { db } from "./firebase";
 import { getCartTotal } from "../reducers/cartReducer";
 import type { CartItem } from "../types/cartItem";
-import type { Order, OrderItem } from "../types/order";
+import type { Order, OrderItem, OrderStatus } from "../types/order";
 
 export async function createOrder(
   userId: string,
@@ -67,4 +67,17 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
     }
     throw error;
   }
+}
+
+export async function getAllOrders(status?: OrderStatus): Promise<Order[]> {
+  const ordersCollection = collection(db, "orders");
+  const ordersQuery = status
+    ? query(ordersCollection, where("status", "==", status), orderBy("createdAt", "desc"))
+    : query(ordersCollection, orderBy("createdAt", "desc"));
+  const snapshot = await getDocs(ordersQuery);
+
+  return snapshot.docs.map((orderDoc) => ({
+    id: orderDoc.id,
+    ...(orderDoc.data() as Omit<Order, "id">),
+  }));
 }
