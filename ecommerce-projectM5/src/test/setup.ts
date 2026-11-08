@@ -14,6 +14,8 @@ vi.mock("../services/authService", () => ({
 
 afterEach(() => {
   cleanup();
-  localStorage.clear();
+  if (typeof window !== "undefined") {
+    localStorage.clear();
+  }
   vi.resetAllMocks();
 });
