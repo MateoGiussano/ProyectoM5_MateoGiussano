@@ -17,7 +17,13 @@ interface PresignResponse {
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const URL_TTL_SECONDS = 600;
 
-const { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_BUCKET } = process.env;
+const {
+  AWS_REGION,
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+  S3_BUCKET,
+  VITE_FIREBASE_PROJECT_ID,
+} = process.env;
 
 const s3 = new S3Client({
   region: AWS_REGION,
@@ -40,15 +46,60 @@ function sanitizeFilename(name: string): string {
   return clean || "imagen";
 }
 
+function getUidFromToken(token: string): string | null {
+  try {
+    const payload = JSON.parse(Buffer.from(token.split(".")[1], "base64url").toString("utf8")) as {
+      sub?: unknown;
+    };
+    return typeof payload.sub === "string" ? payload.sub : null;
+  } catch {
+    return null;
+  }
+}
+
+async function isAdminToken(token: string): Promise<boolean> {
+  const uid = getUidFromToken(token);
+  if (!uid) return false;
+
+  const response = await fetch(
+    `https://firestore.googleapis.com/v1/projects/${VITE_FIREBASE_PROJECT_ID}/databases/(default)/documents/users/${encodeURIComponent(uid)}`,
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  if (!response.ok) return false;
+
+  const profile = (await response.json()) as { fields?: { role?: { stringValue?: string } } };
+  return profile.fields?.role?.stringValue === "admin";
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Método no permitido" });
   }
 
-  if (!AWS_REGION || !AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || !S3_BUCKET) {
-    console.error("Faltan variables de entorno de AWS");
+  if (
+    !AWS_REGION ||
+    !AWS_ACCESS_KEY_ID ||
+    !AWS_SECRET_ACCESS_KEY ||
+    !S3_BUCKET ||
+    !VITE_FIREBASE_PROJECT_ID
+  ) {
+    console.error("Faltan variables de entorno de AWS o Firebase");
     return res.status(500).json({ error: "Configuración del servidor incompleta" });
+  }
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Tenés que iniciar sesión." });
+  }
+
+  try {
+    if (!(await isAdminToken(authHeader.slice("Bearer ".length)))) {
+      return res.status(403).json({ error: "Solo un administrador puede subir imágenes." });
+    }
+  } catch (error) {
+    console.error("Error al verificar la sesión:", error);
+    return res.status(500).json({ error: "No se pudo verificar la sesión" });
   }
 
   const { filename, contentType } = (req.body ?? {}) as PresignBody;

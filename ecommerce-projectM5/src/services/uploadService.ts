@@ -1,3 +1,5 @@
+import { auth } from "./firebase";
+
 interface PresignResponse {
   url: string;
   key: string;
@@ -22,11 +24,16 @@ async function readErrorMessage(response: Response, fallback: string): Promise<s
 }
 
 export async function uploadImage(file: File): Promise<string> {
+  const token = await auth.currentUser?.getIdToken();
+  if (!token) {
+    throw new Error("Tu sesión expiró. Volvé a iniciar sesión.");
+  }
+
   const presignResponse = await safeFetch(
     "/api/presign",
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ filename: file.name, contentType: file.type }),
     },
     "No pudimos conectarnos con el servidor para subir la imagen.",
