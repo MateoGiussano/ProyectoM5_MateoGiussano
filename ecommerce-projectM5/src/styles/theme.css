@@ -61,8 +61,11 @@
   --primary-hover: #c5e0f7;
   --primary-foreground: #274c77;
 
-  /* Feedback: rojo más claro para que se lea sobre azul */
-  --danger: #fca5a5;
+  /* Feedback: versiones claras para que se lean sobre azul (contraste ~4.5:1) */
+  --info: #ffffff;
+  --success: #bbf7d0;
+  --warning: #fde68a;
+  --danger: #fee2e2;
 
   /* Border: blanco semitransparente, más sutil que un gris fijo */
   --border: rgb(255 255 255 / 0.12);
