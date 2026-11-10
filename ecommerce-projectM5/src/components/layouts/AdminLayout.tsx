@@ -33,6 +33,9 @@ export function AdminLayout() {
           <NavLink to="/admin/orders" className={getAdminLinkClass}>
             Órdenes
           </NavLink>
+          <NavLink to="/admin/analytics" className={getAdminLinkClass}>
+            Analytics
+          </NavLink>
         </nav>
 
         <main className="min-w-0 flex-1">

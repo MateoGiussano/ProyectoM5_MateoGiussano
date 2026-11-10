@@ -28,7 +28,7 @@ Necesitaba dos experiencias:
 | Checkout | Crea la orden en Firestore con una foto (snapshot) de los productos y precios, protegido contra doble envío |
 | Mis órdenes | Historial y detalle de cada compra; el estado se actualiza **en tiempo real** (`onSnapshot`) cuando el admin lo cambia |
 | Panel admin | CRUD de productos con subida de imágenes a S3; listado de órdenes en tiempo real con filtro por estado y cambio de estado |
-| Dashboard (extra credit) | Ingresos, órdenes, ticket promedio, órdenes por estado, productos más vendidos y stock bajo, actualizado en tiempo real |
+| Analytics (extra credit) | Pestaña `/admin/analytics`: ingresos, órdenes, ticket promedio, órdenes por estado, productos más vendidos y stock bajo, actualizado en tiempo real |
 | UI | Modo claro y oscuro, responsive |
 
 ## Stack
@@ -65,7 +65,7 @@ AWS S3 · Vercel Functions · Vitest · React Testing Library
   corta la escucha (cleanup del `useEffect`) para no seguir gastando lecturas.
 - **`where` + `orderBy`:** las consultas de órdenes por usuario y por estado necesitan índices compuestos
   (ver la configuración de Firebase).
-- **`limit` en "Stock bajo":** el Dashboard le pide a Firestore solo los 5 productos con 3 unidades o
+- **`limit` en "Stock bajo":** la pestaña Analytics le pide a Firestore solo los 5 productos con 3 unidades o
   menos (`where` + `orderBy` + `limit`), así que filtra el servidor. Con 31 productos el ahorro es chico,
   porque el panel ya carga el catálogo; con miles, esta consulta seguiría leyendo 5 documentos.
 - **El catálogo filtra en el navegador:** la búsqueda de texto ("pro" dentro de "iPhone 17 Pro") no la
@@ -89,7 +89,7 @@ ecommerce-projectM5/
     ├── services/        # acceso a Firebase y a /api (authService, productService, orderService, uploadService)
     ├── routes/          # AppRoutes, ProtectedRoute, AdminRoute
     ├── types/           # interfaces de dominio (Product, Order, User…)
-    ├── utils/           # funciones puras (formato, validaciones, estadísticas del dashboard)
+    ├── utils/           # funciones puras (formato, validaciones, estadísticas de Analytics)
     ├── styles/          # theme.css: variables de color de los dos modos
     └── test/            # setup de Vitest, fixtures y renderWithProviders
 ```
