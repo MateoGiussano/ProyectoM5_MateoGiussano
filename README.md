@@ -26,8 +26,9 @@ Necesitaba dos experiencias:
 | Catálogo | Listado, detalle, búsqueda en el Header (guardada en la URL) y filtro por categoría |
 | Carrito | Context API + `useReducer`, respeta el stock y se guarda en `localStorage` |
 | Checkout | Crea la orden en Firestore con una foto (snapshot) de los productos y precios, protegido contra doble envío |
-| Mis órdenes | Historial y detalle de cada compra |
-| Panel admin | CRUD de productos con subida de imágenes a S3; listado de órdenes con filtro por estado y cambio de estado |
+| Mis órdenes | Historial y detalle de cada compra; el estado se actualiza **en tiempo real** (`onSnapshot`) cuando el admin lo cambia |
+| Panel admin | CRUD de productos con subida de imágenes a S3; listado de órdenes en tiempo real con filtro por estado y cambio de estado |
+| Dashboard (extra credit) | Ingresos, órdenes, ticket promedio, órdenes por estado, productos más vendidos y stock bajo, actualizado en tiempo real |
 | UI | Modo claro y oscuro, responsive |
 
 ## Stack
@@ -57,6 +58,19 @@ AWS S3 · Vercel Functions · Vitest · React Testing Library
   quedan en la función serverless y nunca llegan al frontend.
 - S3 sirve las imágenes públicamente, rápido y sin pasar por nuestro servidor.
 
+### Consultas a Firestore: `where`, `onSnapshot` y `limit`
+
+- **`onSnapshot` en las órdenes:** "Mis órdenes" y el panel admin quedan escuchando a Firestore. El cliente
+  ve el cambio de estado sin recargar y el admin ve entrar las compras nuevas. Al salir de la página se
+  corta la escucha (cleanup del `useEffect`) para no seguir gastando lecturas.
+- **`where` + `orderBy`:** las consultas de órdenes por usuario y por estado necesitan índices compuestos
+  (ver la configuración de Firebase).
+- **`limit` en "Stock bajo":** el Dashboard le pide a Firestore solo los 5 productos con 3 unidades o
+  menos (`where` + `orderBy` + `limit`), así que filtra el servidor. Con 31 productos el ahorro es chico,
+  porque el panel ya carga el catálogo; con miles, esta consulta seguiría leyendo 5 documentos.
+- **El catálogo filtra en el navegador:** la búsqueda de texto ("pro" dentro de "iPhone 17 Pro") no la
+  resuelve Firestore, y con un catálogo chico filtrar en memoria es instantáneo.
+
 ### Estructura de carpetas (por capas)
 
 ```
@@ -75,7 +89,7 @@ ecommerce-projectM5/
     ├── services/        # acceso a Firebase y a /api (authService, productService, orderService, uploadService)
     ├── routes/          # AppRoutes, ProtectedRoute, AdminRoute
     ├── types/           # interfaces de dominio (Product, Order, User…)
-    ├── utils/           # funciones puras (formato, validaciones)
+    ├── utils/           # funciones puras (formato, validaciones, estadísticas del dashboard)
     ├── styles/          # theme.css: variables de color de los dos modos
     └── test/            # setup de Vitest, fixtures y renderWithProviders
 ```
@@ -214,12 +228,12 @@ La función también usa `VITE_FIREBASE_PROJECT_ID` para consultar Firestore. La
 
 ## Testing
 
-35 tests con **Vitest + React Testing Library**, priorizados por riesgo. **No hacen llamadas reales**:
+38 tests con **Vitest + React Testing Library**, priorizados por riesgo. **No hacen llamadas reales**:
 Firebase, Firestore y el SDK de AWS están mockeados.
 
 | Nivel | Qué cubre |
 |---|---|
-| Unitario | `cartReducer`: cada acción y casos límite (stock, cantidad 0, no mutar el estado) |
+| Unitario | `cartReducer`: cada acción y casos límite (stock, cantidad 0, no mutar el estado) · `computeDashboardStats`: las canceladas no suman, sin órdenes no divide por 0 |
 | Hooks (`renderHook`) | `useCart` (acumular, quitar, vaciar, persistir) y `useAuth` (sin sesión, admin, falla al leer el rol, sesión vencida) |
 | Componente | `AdminRoute`: sin sesión → login, customer → tienda, admin → panel |
 | Flujo completo | Producto → carrito → checkout: un doble clic crea **una sola** orden; si falla, el carrito queda intacto |
