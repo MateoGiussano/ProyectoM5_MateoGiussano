@@ -3,7 +3,7 @@ import {
   collection,
   doc,
   getDoc,
-  getDocs,
+  onSnapshot,
   orderBy,
   query,
   serverTimestamp,
@@ -41,18 +41,28 @@ export async function createOrder(
   return orderRef.id;
 }
 
-export async function getOrdersByUser(userId: string): Promise<Order[]> {
+export function subscribeToUserOrders(
+  userId: string,
+  onChange: (orders: Order[]) => void,
+  onError: (error: unknown) => void,
+): () => void {
   const ordersQuery = query(
     collection(db, "orders"),
     where("userId", "==", userId),
     orderBy("createdAt", "desc"),
   );
-  const snapshot = await getDocs(ordersQuery);
 
-  return snapshot.docs.map((orderDoc) => ({
-    id: orderDoc.id,
-    ...(orderDoc.data() as Omit<Order, "id">),
-  }));
+  return onSnapshot(
+    ordersQuery,
+    (snapshot) =>
+      onChange(
+        snapshot.docs.map((orderDoc) => ({
+          id: orderDoc.id,
+          ...(orderDoc.data() as Omit<Order, "id">),
+        })),
+      ),
+    onError,
+  );
 }
 
 export async function getOrderById(orderId: string): Promise<Order | null> {
@@ -70,17 +80,27 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
   }
 }
 
-export async function getAllOrders(status?: OrderStatus): Promise<Order[]> {
+export function subscribeToAllOrders(
+  status: OrderStatus | undefined,
+  onChange: (orders: Order[]) => void,
+  onError: (error: unknown) => void,
+): () => void {
   const ordersCollection = collection(db, "orders");
   const ordersQuery = status
     ? query(ordersCollection, where("status", "==", status), orderBy("createdAt", "desc"))
     : query(ordersCollection, orderBy("createdAt", "desc"));
-  const snapshot = await getDocs(ordersQuery);
 
-  return snapshot.docs.map((orderDoc) => ({
-    id: orderDoc.id,
-    ...(orderDoc.data() as Omit<Order, "id">),
-  }));
+  return onSnapshot(
+    ordersQuery,
+    (snapshot) =>
+      onChange(
+        snapshot.docs.map((orderDoc) => ({
+          id: orderDoc.id,
+          ...(orderDoc.data() as Omit<Order, "id">),
+        })),
+      ),
+    onError,
+  );
 }
 
 export async function updateOrderStatus(orderId: string, status: OrderStatus): Promise<void> {

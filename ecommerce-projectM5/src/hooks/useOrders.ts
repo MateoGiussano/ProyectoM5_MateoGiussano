@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getOrdersByUser } from "../services/orderService";
+import { subscribeToUserOrders } from "../services/orderService";
 import type { Order } from "../types/order";
 
 export function useOrders(userId: string | undefined) {
@@ -8,25 +8,26 @@ export function useOrders(userId: string | undefined) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    async function loadOrders() {
-      if (!userId) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const data = await getOrdersByUser(userId);
-        setOrders(data);
-      } catch (err) {
-        console.error("Error al cargar las órdenes:", err);
-        setError("No pudimos cargar tus órdenes. Intentá de nuevo más tarde.");
-      } finally {
-        setLoading(false);
-      }
+    if (!userId) {
+      return;
     }
 
-    loadOrders();
+    const unsubscribe = subscribeToUserOrders(
+      userId,
+      (data) => {
+        setOrders(data);
+        setError("");
+        setLoading(false);
+      },
+      (err) => {
+        console.error("Error al escuchar las órdenes:", err);
+        setError("No pudimos cargar tus órdenes. Intentá de nuevo más tarde.");
+        setLoading(false);
+      },
+    );
+
+    return unsubscribe;
   }, [userId]);
 
-  return { orders, loading, error };
+  return { orders, loading: userId ? loading : false, error };
 }
