@@ -5,8 +5,12 @@ import {
   doc,
   getDoc,
   getDocs,
+  limit,
+  orderBy,
+  query,
   serverTimestamp,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import type { Product, ProductInput } from "../types/product";
@@ -51,4 +55,19 @@ export async function updateProduct(id: string, changes: Partial<ProductInput>):
 
 export async function deleteProduct(id: string): Promise<void> {
   await deleteDoc(doc(db, "products", id));
+}
+
+export async function getLowStockProducts(maxStock: number, count: number): Promise<Product[]> {
+  const lowStockQuery = query(
+    collection(db, "products"),
+    where("stock", "<=", maxStock),
+    orderBy("stock", "asc"),
+    limit(count),
+  );
+  const snapshot = await getDocs(lowStockQuery);
+
+  return snapshot.docs.map((productDoc) => ({
+    id: productDoc.id,
+    ...(productDoc.data() as Omit<Product, "id">),
+  }));
 }
