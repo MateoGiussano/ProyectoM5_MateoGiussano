@@ -40,7 +40,6 @@ export function ConfirmDialog({
 
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center p-4">
-      {/* Fondo oscuro: tocarlo cancela */}
       <div onClick={onCancel} aria-hidden="true" className="absolute inset-0 bg-black/50" />
 
       <div

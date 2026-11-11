@@ -30,7 +30,6 @@ export function AdminProductsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Mismo patrón que useProducts: la función async se define adentro del efecto.
     async function loadInitialProducts() {
       await fetchProducts();
     }

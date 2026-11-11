@@ -1,10 +1,8 @@
 @import "tailwindcss";
 @import "./theme.css";
 
-/* dark: se activa con la clase .dark del <html> */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Estilos globales */
 @layer base {
   body {
     font-family: "Inter", system-ui, sans-serif;

@@ -1,6 +1,3 @@
-/* =========================================
-   Valores que no cambian entre modos
-   ========================================= */
 @theme {
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -10,70 +7,50 @@
   --shadow-md: 0 8px 24px rgb(0 0 0 / 0.08);
 }
 
-/* =========================================
-   Tema claro (por defecto)
-   ========================================= */
 :root {
-  /* Background */
   --background: #ffffff;
   --surface: #f1f4f6;
   --card: #ffffff;
 
-  /* Text */
   --foreground: #1a2e44;
   --muted: #5b6b7d;
 
-  /* Brand */
   --primary: #274c77;
   --primary-hover: #34688b;
   --primary-foreground: #ffffff;
 
-  /* Feedback */
   --info: #34688b;
   --success: #16a34a;
   --warning: #d97706;
   --danger: #dc2626;
 
-  /* Border */
   --border: #e7ecef;
 
-  /* Spacing */
   --spacing-sm: 4px;
   --spacing-md: 8px;
   --spacing-lg: 12px;
 }
 
-/* =========================================
-   Tema oscuro
-   ========================================= */
 .dark {
-  /* Background */
   --background: #274c77;
   --surface: #1e3a5c;
   --card: #2f5682;
 
-  /* Text */
   --foreground: #ffffff;
   --muted: #c9d6e3;
 
-  /* Brand: claro para que contraste sobre fondo oscuro */
   --primary: #a3cef1;
   --primary-hover: #c5e0f7;
   --primary-foreground: #274c77;
 
-  /* Feedback: versiones claras para que se lean sobre azul (contraste ~4.5:1) */
   --info: #ffffff;
   --success: #bbf7d0;
   --warning: #fde68a;
   --danger: #fee2e2;
 
-  /* Border: blanco semitransparente, más sutil que un gris fijo */
   --border: rgb(255 255 255 / 0.12);
 }
 
-/* =========================================
-   Conecta las variables con Tailwind
-   ========================================= */
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);

@@ -144,7 +144,7 @@ describe("cálculos del carrito", () => {
       { product: createProduct({ id: "p2", price: 100 }), quantity: 3 },
     ];
 
-    expect(getCartTotal(items)).toBe(1900); // 800×2 + 100×3
+    expect(getCartTotal(items)).toBe(1900);
   });
 
   it("cuenta la cantidad total de unidades", () => {

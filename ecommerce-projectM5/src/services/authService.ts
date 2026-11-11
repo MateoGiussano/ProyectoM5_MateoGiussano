@@ -73,8 +73,6 @@ export function getAuthErrorMessage(error: unknown): string {
   return "Ocurrió un error. Intentá de nuevo.";
 }
 
-// Avisa cada vez que cambia la sesión (login, logout o al recargar la página).
-// Devuelve la función para dejar de escuchar.
 export function subscribeToAuthChanges(
   callback: (firebaseUser: FirebaseUser | null) => void,
 ): () => void {

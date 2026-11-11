@@ -24,7 +24,7 @@ export function HomePage() {
   });
 
   function handleClearFilters() {
-    setSearchParams({}, { replace: true }); // borra "?search=" de la URL
+    setSearchParams({}, { replace: true });
     setSelectedCategory(null);
   }
 
